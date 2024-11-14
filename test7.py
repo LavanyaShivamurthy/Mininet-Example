@@ -5,7 +5,8 @@ from mininet.cli import CLI
 from mininet.log import setLogLevel
 from mininet.link import TCLink
 from mininet.util import dumpNodeConnections
-import os
+import csv
+from datetime import datetime
 import time
 from time import sleep
 import threading
@@ -13,9 +14,10 @@ import json
 from collections import defaultdict
 import psutil
 import subprocess
+import os
 # ... (Previous NetworkStats and NetworkMonitor classes remain the same) ...
 class NetworkStats:
-    def __init__(self):
+    def __init__(self, csv_output_dir='network_stats'):
         self.stats = defaultdict(lambda: {
             'bytes_sent': 0,
             'bytes_recv': 0,
@@ -25,43 +27,181 @@ class NetworkStats:
             'latency_history': []
         })
         self.lock = threading.Lock()
+        self.csv_output_dir = csv_output_dir
+        
+        # Create output directory if it doesn't exist
+        os.makedirs(csv_output_dir, exist_ok=True)
+        
+        # Initialize CSV files with headers
+        self._init_csv_files()
+    
+    def _init_csv_files(self):
+        """Initialize CSV files with headers"""
+        # Traffic stats CSV
+        with open(f'{self.csv_output_dir}/traffic_stats.csv', 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(['timestamp', 'link', 'bytes_sent', 'bytes_recv', 
+                           'packets_sent', 'packets_recv'])
+        
+        # Bandwidth CSV
+        with open(f'{self.csv_output_dir}/bandwidth.csv', 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(['timestamp', 'link', 'bandwidth_mbps'])
+        
+        # Latency CSV
+        with open(f'{self.csv_output_dir}/latency.csv', 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(['timestamp', 'link', 'latency_ms'])
 
     def update_stats(self, node1, node2, bytes_sent, bytes_recv, packets_sent, packets_recv):
         with self.lock:
             key = f"{node1}-{node2}"
-            # Ensure we're only adding positive deltas
+            timestamp = datetime.now().isoformat()
+            
             if bytes_sent >= 0 and bytes_recv >= 0 and packets_sent >= 0 and packets_recv >= 0:
                 self.stats[key]['bytes_sent'] += bytes_sent
                 self.stats[key]['bytes_recv'] += bytes_recv
                 self.stats[key]['packets_sent'] += packets_sent
                 self.stats[key]['packets_recv'] += packets_recv
-                # Print debug information
-                print(f"Updated stats for {key}: +{bytes_sent} bytes sent, +{bytes_recv} bytes received")
+                
+                # Write to CSV
+                with open(f'{self.csv_output_dir}/traffic_stats.csv', 'a', newline='') as f:
+                    writer = csv.writer(f)
+                    writer.writerow([timestamp, key, bytes_sent, bytes_recv, 
+                                   packets_sent, packets_recv])
 
     def add_bandwidth_measurement(self, node1, node2, bandwidth):
         with self.lock:
             key = f"{node1}-{node2}"
+            timestamp = datetime.now().isoformat()
+            
             self.stats[key]['bandwidth_history'].append({
                 'timestamp': time.time(),
                 'bandwidth': bandwidth
             })
-            # Print debug information
-            print(f"Added bandwidth measurement for {key}: {bandwidth} Mbps")
+            
+            # Write to CSV
+            with open(f'{self.csv_output_dir}/bandwidth.csv', 'a', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerow([timestamp, key, bandwidth])
 
     def add_latency_measurement(self, node1, node2, latency):
         with self.lock:
             key = f"{node1}-{node2}"
+            timestamp = datetime.now().isoformat()
+            
             self.stats[key]['latency_history'].append({
                 'timestamp': time.time(),
                 'latency': latency
             })
-            # Print debug information
-            print(f"Added latency measurement for {key}: {latency} ms")
+            
+            # Write to CSV
+            with open(f'{self.csv_output_dir}/latency.csv', 'a', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerow([timestamp, key, latency])
+                
+class TCPDumpCollector:
+    def __init__(self, net, output_dir='tcpdump_data'):
+        self.net = net
+        self.output_dir = output_dir
+        self.processes = {}
+        os.makedirs(output_dir, exist_ok=True)
+    
+    def start_capture(self, node, interface=None, filter_str=None):
+        """Start tcpdump capture on a node"""
+        if isinstance(node, str):
+            node = self.net.get(node)
+        
+        # If no interface specified, capture on all interfaces
+        if interface is None:
+            interfaces = [intf.name for intf in node.intfs.values() if intf.name != 'lo']
+        else:
+            interfaces = [interface]
+        
+        for intf in interfaces:
+            try:
+                # Create filename based on node, interface and timestamp
+                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+                filename = f'{self.output_dir}/{node.name}_{intf}_{timestamp}.pcap'
+                
+                # Build tcpdump command using pgrep to get PID reliably
+                cmd = f'tcpdump -i {intf} -w {filename}'
+                if filter_str:
+                    cmd += f' "{filter_str}"'
+                
+                # Start tcpdump in background
+                node.cmd(f'{cmd} > /dev/null 2>&1 &')
+                
+                # Get PID using pgrep
+                pid_output = node.cmd(f"pgrep -f 'tcpdump -i {intf}'")
+                
+                # Extract PID from output
+                try:
+                    pid = int(pid_output.strip().split('\n')[0])
+                except (ValueError, IndexError) as e:
+                    print(f"Warning: Could not get PID for tcpdump on {node.name} {intf}, using placeholder")
+                    pid = -1
+                
+                self.processes[(node.name, intf)] = {
+                    'pid': pid,
+                    'file': filename
+                }
+                print(f"Started tcpdump on {node.name} interface {intf}, saving to {filename} (PID: {pid})")
+                
+            except Exception as e:
+                print(f"Error starting tcpdump on {node.name} interface {intf}: {e}")
+    
+    def stop_capture(self, node=None, interface=None):
+        """Stop tcpdump capture"""
+        if node:
+            if isinstance(node, str):
+                node_name = node
+            else:
+                node_name = node.name
+            
+            # Stop specific interface or all interfaces for the node
+            to_stop = [(n, i) for n, i in self.processes.keys() 
+                      if n == node_name and (interface is None or i == interface)]
+        else:
+            # Stop all captures
+            to_stop = list(self.processes.keys())
+        
+        for node_name, intf in to_stop:
+            try:
+                process = self.processes.pop((node_name, intf))
+                node = self.net.get(node_name)
+                
+                # Kill tcpdump process more reliably
+                if process['pid'] != -1:
+                    node.cmd(f'kill {process["pid"]}')
+                
+                # Backup method to ensure tcpdump is stopped
+                node.cmd(f"pkill -f 'tcpdump -i {intf}'")
+                
+                print(f"Stopped tcpdump on {node_name} interface {intf}")
+                print(f"Capture saved to {process['file']}")
+                
+            except Exception as e:
+                print(f"Error stopping tcpdump on {node_name} interface {intf}: {e}")
+    
+    def cleanup(self):
+        """Cleanup all tcpdump processes"""
+        try:
+            # Stop all captures
+            self.stop_capture()
+            
+            # Additional cleanup to ensure no tcpdump processes remain
+            for node in self.net.hosts:
+                node.cmd('pkill -f tcpdump')
+            
+            print("Cleaned up all tcpdump processes")
+            
+        except Exception as e:
+            print(f"Error during tcpdump cleanup: {e}")
 
-    def get_stats(self):
-        with self.lock:
-            return dict(self.stats)
 
+                
+                
 class ExpandedQoSTopoOF13(Topo):
     def build(self):
         # Create hosts and switches (same as before)
@@ -390,21 +530,19 @@ def test_network(net):
         
         
         
-        
-        
-
 def main():
     setLogLevel('info')
     
     # Clean up any previous run
     os.system('mn -c')
     os.system('killall controller')
+    os.system('pkill -f tcpdump')  # Add this line to clean up any lingering tcpdump processes
     
     print("Starting QoS network with statistics monitoring")
     
     # Initialize network and statistics collector
     topo = ExpandedQoSTopoOF13()
-    stats_collector = NetworkStats()
+    stats_collector = NetworkStats(csv_output_dir='network_stats')
     
     # Create and start network
     net = Mininet(
@@ -419,37 +557,43 @@ def main():
     print("Waiting for network to initialize...")
     sleep(2)
     
+    # Initialize TCPDump collector
+    tcpdump_collector = TCPDumpCollector(net, output_dir='tcpdump_data')
+    
     # Configure switches and add flows
     for switch in net.switches:
         configure_switch_of13(switch)
         add_openflow_rules(switch)
     
-    # Initialize and start network monitor
-    monitor = NetworkMonitor(net, stats_collector)
-    monitor.start_monitoring()
-    
-    # Test network connectivity
-    test_network(net)
-    
-    # Create a background thread to periodically print statistics
-    def print_stats_periodically():
-        while True:
-            print_network_stats(stats_collector)
-            sleep(10)
-    
-    stats_thread = threading.Thread(target=print_stats_periodically)
-    stats_thread.daemon = True
-    stats_thread.start()
-    
-    # Add custom command to Mininet CLI
-    CLI.do_showstats = lambda self, _: print_network_stats(stats_collector)
-    
-    print("\nNetwork is ready. Type 'showstats' to see current statistics.")
-    CLI(net)
-    
-    # Cleanup
-    monitor.stop_monitoring()
-    net.stop()
+    try:
+        # Start tcpdump on all hosts
+        for host in net.hosts:
+            tcpdump_collector.start_capture(host)
+        
+        # Initialize and start network monitor
+        monitor = NetworkMonitor(net, stats_collector)
+        monitor.start_monitoring()
+        
+        # Add custom commands to Mininet CLI
+        CLI.do_showstats = lambda self, _: print_network_stats(stats_collector)
+        CLI.do_stoptcpdump = lambda self, _: tcpdump_collector.stop_capture()
+        
+        print("\nNetwork is ready.")
+        print("Available commands:")
+        print("  showstats - Show current network statistics")
+        print("  stoptcpdump - Stop all tcpdump captures")
+        CLI(net)
+        
+    except Exception as e:
+        print(f"Error during network operation: {e}")
+        
+    finally:
+        # Cleanup
+        print("Cleaning up...")
+        tcpdump_collector.cleanup()
+        monitor.stop_monitoring()
+        net.stop()
+        os.system('pkill -f tcpdump')  # Final cleanup of any remaining tcpdump processes
 
 if __name__ == '__main__':
     main()
