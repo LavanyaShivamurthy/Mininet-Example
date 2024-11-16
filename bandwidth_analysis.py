@@ -1,3 +1,10 @@
+#pip install matplotlib pandas
+""" You can adjust the interval by changing the INTERVAL constant at the top of the script. For example:
+For 1-second intervals: INTERVAL = 1.0
+For 100ms intervals: INTERVAL = 0.1
+For 10-second intervals: INTERVAL = 10.0"""
+
+
 import os
 import csv
 from scapy.all import ARP, ICMP, TCP, UDP, IP, IPv6, ICMPv6EchoRequest, ICMPv6EchoReply, rdpcap, ICMPv6ND_NS, ICMPv6ND_NA
