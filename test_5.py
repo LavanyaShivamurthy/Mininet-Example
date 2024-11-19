@@ -1,3 +1,8 @@
+""" This is minnet Program to create topology with : Controller --1
+                                                     switch --4
+                                                     host -- 6
+    
+"""
 from mininet.net import Mininet
 from mininet.topo import Topo
 from mininet.node import OVSSwitch, Controller
