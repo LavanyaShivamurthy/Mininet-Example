@@ -1,0 +1,417 @@
+    1  cd Downloads
+    2  ls
+    3  ./ google-chrome-stable_current_amd64.deb 
+    4  cd ./goo
+    5  ./google-chrome-stable_current_amd64.deb 
+    6  su ./google-chrome-stable_current_amd64.deb 
+    7  exit
+    8  sudo apt-get install libxss1 libappindicator1 libindicator7
+    9  wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+   10  sudo apt install ./google-chrome*.deb
+   11  wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+   12  sudo dpkg -i ./google-chrome*.deb
+   13  sudo apt update
+   14  sudo apt upgrade
+   15  sudo apt-get install libxss1 libappindicator1 libindicator7
+   16  wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+   17  sudo apt install ./google-chrome*.deb
+   18  deb http://dl.google.com/linux/chrome/deb/ stable main
+   19  wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+   20  sudo apt-get install google-chrome-stable
+   21  sudo apt-get install google chrome
+   22  cd Downloads
+   23  ls
+   24  cd cd Documents/
+   25  ls
+   26  cd Documents/
+   27  ls
+   28  mkdir SDN_IoT
+   29  cal
+   30  calc
+   31  [200~sudo curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl
+   32  sudo curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl
+   33  sudo chmod a+rx /usr/local/bin/youtube-dl
+   34  sudo -H pip install --upgrade youtube-dl
+   35  lsb_release -a
+   36  ls
+   37  cd /home/
+   38  ls
+   39  cd ictlab7/
+   40  ls\
+   41  mkdir Mininet
+   42  cd Mininet/
+   43  ls
+   44  git clone https://github.com/mininet/mininet
+   45  sudo apt install git
+   46  ls
+   47  git clone https://github.com/mininet/mininet
+   48  cd mininet/
+   49  git tag
+   50  git checkout -b mininet-2.3.0 2.3.0 
+   51  git checkout -b mininet-2.3.0 2.3.0
+   52  cd .
+   53  cd ..
+   54  ls
+   55  mininet/util/install.sh  -h
+   56  mininet/util/install.sh  
+   57  sudo mn --switch ovs --topo minimal
+   58  sudo mn 
+   59  sudo apt update
+   60  install Ryu Controller
+   61  sudo apt install pip3
+   62  sudo apt update
+   63  apt-get install python3-pip
+   64  sudo apt-get install python3-pip
+   65  sudo pip3 install ryu
+   66  ryu-manager --version
+   67  sudo mn 
+   68  cd ..
+   69  ls
+   70  cd Documents/
+   71  ls
+   72  cd code
+   73  vi V1.txt
+   74  vim V1.txt
+   75  sudo apt install vim
+   76  vim V1.txt
+   77  vim v2.txt
+   78  meld vim v2.txt
+   79  sudo apt install meld
+   80  meld vim v2.txt
+   81  meld v2.txt V1.txt 
+   82  cd ../
+   83  ls
+   84  cd Mininet/
+   85  ls
+   86  cd mininet/
+   87  ls
+   88  sudo mn -h
+   89  sudo apt-install xterm
+   90  sudo apt install xterm
+   91  sudo mn
+   92  from mininet.node import OVSController
+   93  sudo apt install mailutils
+   94  sudo wireshark &
+   95  sudo ln /usr/bin/ovs-testcontroller /usr/bin/controller 
+   96  sudo mn
+   97  ps -eaf | grep tcp
+   98  kill -9 sudo 1832
+   99  sudo wireshark &
+  100  sudo mn
+  101  sudo update
+  102  sudo apt-get update
+  103  sudo apt-get upgrade
+  104  sudo apt-get update
+  105  sudo -R 777
+  106  exit
+  107  cd Mininet/
+  108  ls
+  109  cd mininet/
+  110  sudo mn
+  111  sudo cp /usr/bin/ovs-testcontroller /usr/bin/ovs-controller
+  112  sudo mn
+  113  ps -aux | grep controller
+  114  sudo apt-get install openvswitch-testcontroller
+  115  sudo cp /usr/bin/ovs-testcontroller /usr/bin/ovs-controller
+  116  sudo mn
+  117  sudo fuser -k 6653/tcp
+  118  sudo mn
+  119  sudo apt-get install openvswitch-testcontroller
+  120  sudo cp /usr/bin/ovs-testcontroller /usr/bin/ovs-controller
+  121  sudo mn
+  122  cd ..
+  123  mkdir openvswitch
+  124  cd openvswitch/
+  125  git clone https://github.com/openvswitch/ovs.git
+  126  git checkout v2.7.0
+  127  git checkout origin/branch-2.7
+  128  sudo apt-get uninstall mininet 
+  129  cd ..
+  130  sudo apt-get uninstall mininet 
+  131  sudo pip uninstall mininet 
+  132  ls
+  133  rm -rf mininet/
+  134  sudo rm -rf mininet/
+  135  git clone https://github.com/mininet/mininet
+  136  ls
+  137  cd mininet/
+  138  ls
+  139  git fetch
+  140  git tag
+  141  git checkout -b mininet-2.3.0 2.3.0 
+  142  sudo make install
+  143  sudo apt-get update
+  144  cd..
+  145  cd ..
+  146  sudo apt-get update
+  147  ls
+  148  cd Mininet/
+  149  ls
+  150  cd mininet/
+  151  ls
+  152  sudo make install 
+  153  cd ..
+  154  cd -
+  155  ls
+  156  rm -rf mininet/
+  157  ls
+  158  grep -r min*
+  159  grep -r mininet
+  160  git clone https://github.com/mininet/mininet
+  161  cd mininet
+  162  git tag
+  163  git checkout -b mininet-2.3.0 2.3.
+  164  git checkout -b mininet-2.3.0 2.3.0
+  165  cd ..
+  166  mininet/util/install.sh 
+  167  sudo apt update
+  168  sudo apt upgrade
+  169  ls
+  170  cd Mininet
+  171  ls
+  172  cd ..
+  173  ls
+  174  chmod 777 Mininet
+  175  chmod 777
+  176  chmod -R 777
+  177  chmod 777 -R 
+  178  chmod 777 -rwx
+  179  sudo chmod 777 -rwx
+  180  cd ..
+  181  cdv..
+  182  cd ..
+  183  ls
+  184  sudo chmod -R 777 /Mininet
+  185  sudo -i
+  186  sudo su
+  187  git clone https://github.com/mininet/mininet
+  188  git tag # list available versions
+  189  git tag
+  190  clear
+  191  ls
+  192  cd mininet/
+  193  ls
+  194  git tag # list available versioins
+  195  git checkout -b mininet-2.3.0 2.3.0 #
+  196  cd ..
+  197  ls
+  198  cd mininet/
+  199  ls
+  200  cd util/
+  201  ls
+  202  cd instal.sh
+  203  cd ..
+  204  ls
+  205  cd mininet/util/install.sh
+  206  mininet/util/install.sh
+  207  mininet/util/install.sh -a
+  208  sudo wireshark &
+  209  sudo wireshark 
+  210  mn
+  211  sudo wireshark &
+  212  tcpdump 
+  213  hostname
+  214  sudo apt-get install openvswitch-switch
+  215  sudo service openvswitch-switch
+  216  sudo service openvswitch-switch start
+  217  mn
+  218  sudo mn
+  219  sudo mn -c
+  220  sudo wireshark &
+  221  ps -eaf | grep wireshark
+  222  kill -9 77736
+  223  sudo wireshark 
+  224  chrome
+  225  google-chrome
+  226  ps -eaf | grep google-chrome
+  227  ps -eaf | grep chrome
+  228  kill -9 4123
+  229  sudo kill -9 4123
+  230  ps -eaf | grep chrome
+  231  google-chrome
+  232  sudo rm -rf ~/.config/google-chrome/Singleton
+  233  hostname
+  234  hostnamectl ictlab7-hp-pro-tower-400-g9-pci-desktop-pc ictlab7
+  235  hostnamectl set-hostname  ictlab7
+  236  hostname
+  237  google-chrome
+  238  sudo rm -rf ~/.config/google-chrome/Singleton
+  239  google-chrome
+  240  reboot 
+  241  google-chrome
+  242  sudo rm -rf ~/snap/chromium/common/chromium/Singleton*
+  243  google-chrome
+  244  sudo su
+  245  sudo snap install overleaf
+  246  sudo overleaf 
+  247  apt-get install xinit lxde
+  248  sudo apt-get install xinit lxde
+  249  sudo mn 
+  250  sudo mn -c
+  251  sudo mn 
+  252  ps -aux | grep controller
+  253  ifconfig
+  254  kill -9 2046
+  255  sudo kill -9 2046
+  256  sudo mn 
+  257  ps -aux | grep controller
+  258  sudo kill -9 4160
+  259  sudo kill -9 11004
+  260  sudo kill -9 39842
+  261  sudo mn --topo=single,4
+  262  sudo mn --topo=tree,2,2
+  263  ps -aux | grep controller
+  264  sudo mn -c
+  265  clear
+  266  script myMininet_commands.txt
+  267  ls
+  268  pwd
+  269  cd Mininet/
+  270  ls
+  271  cd mininet/
+  272  ls
+  273  cd examples/
+  274  ls
+  275  vim bind.py 
+  276  pwd
+  277  cd Documents/
+  278  ls
+  279  cd Mininet_Experiment/
+  280  ls
+  281  cd examples/
+  282  python3 switchline.py 
+  283  sudo su
+  284  ls
+  285  cd ..
+  286  ls
+  287  rm -rf Mininet_Experiment/
+  288  ifconfig
+  289  sudo tcpdump -i h1-eth0 -w mininet_capture.pcap
+  290  sudo tcpdump -i s1-eth1 -w mininet_capture.pcap
+  291  vi mininet_capture.pcap 
+  292  ifconfig
+  293  sudo tcpdump -i s1-eth1 -w mininet_capture.pcap
+  294  ls
+  295  pwd
+  296  ls
+  297  ls -lrt
+  298  sudo tcpdump -i h1-eth0 -w capture.pcap
+  299  ifconfig
+  300  sudo tcpdump -i s1-eth0 -w capture.pcap
+  301  sudo tcpdump -i s1-eth1 -w capture.pcap
+  302  exit
+  303  vi mininet_capture.pcap 
+  304  sudo su
+  305  ls
+  306  locaet ryu
+  307  locate ryu
+  308  vi /usr/local/lib/python3.10/dist-packages/ryu/app/simple_switch.py 
+  309  vim  /usr/local/lib/python3.10/dist-packages/ryu/app/my_simple_switch.py 
+  310  sudo vim  /usr/local/lib/python3.10/dist-packages/ryu/app/my_simple_switch.py 
+  311  ryu-manager ryu/app/simple_switch.py
+  312  sudo ryu-manager ryu/app/simple_switch.py
+  313  clear
+  314  vim priority_1.py
+  315  cd ..
+  316  git remote add origin https://github.com/LavanyaShivamurthy/Mininet-Example.git
+  317  echo "# Mininet-Example" >> README.md
+  318  git init
+  319  git add REA
+  320  d
+  321  git add READMe.md
+  322  git add README.md
+  323  git commit -m "first commit"
+  324  git branch -M main
+  325  git remote add origin https://github.com/LavanyaShivamurthy/Mininet-Example.git
+  326  git push -u origin main
+  327  git branch -M main
+  328  ls
+  329  rm -rf examples/
+  330  git push -u origin main
+  331  git commit -m "initial commit"
+  332  git config user.email "you@example.com"
+  333  git config user.email "lavanyashivamurthy@gmail.com"
+  334  git config user.name "lavanyashivamurthy"
+  335  git commit -m "initial commit"
+  336  git push origin master
+  337  git init
+  338  git add 
+  339  git add .
+  340  git commit -m 'mss'
+  341  git push -u origin master
+  342  git branch -M main
+  343  it remote add origin "https://github.com/LavanyaShivamurthy/Mininet-Example.git"
+  344  git remote add origin "https://github.com/LavanyaShivamurthy/Mininet-Example.git"
+  345  git push -u origin main
+  346  ssh-keygen -p -f ~/.ssh/id_ed25519
+  347  sudo ssh-keygen -p -f ~/.ssh/id_ed25519
+  348  sudo 
+  349  sudo su
+  350  ls
+  351  cd /home/ictlab7/Documents/Mininet_Learning
+  352  ls
+  353  vim mininet_pri_test_1.py
+  354  wireshark &
+  355  wireshark 
+  356  sudo su
+  357  cd /home/ictlab7/Documents/Mininet_Learning/
+  358  ls
+  359  vim priority_allocation_ICMP.py
+  360  vi mininet_test.py 
+  361  sudo mininet_test.py 
+  362  vi mininet_test.py 
+  363  chmod +777 mininet_test.py 
+  364  sudo chmod +777 mininet_test.py 
+  365  chmod +777 mininet_test.py 
+  366  cp mininet_test.py test_mininet.py
+  367  vi test_mini.py
+  368  cd ..
+  369  ls
+  370  sudo su
+  371  sudo apt-get install terminator
+  372  vim mininet_pri_test_1.py
+  373  cd /home/ictlab7/Documents/Mininet_Learning
+  374  vi minnet_main.py 
+  375  ls
+  376  cp  minnet_main.py minnet_main_working.py 
+  377  vi minnet_main.py 
+  378  vi mininet_main_complex.py
+  379  vim mininet_main_complex.py
+  380  python3 mininet_main_complex.py
+  381  cd Documents/
+  382  cd Mininet_Learning/
+  383  ls
+  384  sudo su
+  385  cd Documents/
+  386  ks
+  387  ls
+  388  cd Mininet_Learning/
+  389  ls -lrt
+  390  cd tcpdump_data/
+  391  ls
+  392  ls -lrt
+  393  cd ..
+  394  ls
+  395  cd /home/ictlab7/
+  396  ls
+  397  sudo su
+  398  cd /home/ictlab7/Documents/Mininet_Learning/
+  399  ls -rt
+  400  ls -lrt
+  401  sudo u
+  402  sudo su
+  403  shutdown
+  404  cd /home/ictlab7/Documents/Mininet_Learning/
+  405  ls
+  406  history
+  407  sudo su
+  408  cd /home/ictlab7/Documents/Mininet_Learning/
+  409  ls
+  410  sudo su
+  411  ls
+  412  cd Documents/
+  413  ls
+  414  cd Mininet_Learning/
+  415  ls
+  416  history
+  417  history > history
