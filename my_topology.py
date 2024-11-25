@@ -117,30 +117,37 @@ def add_openflow_rules(switch):
     print(switch.cmd('ovs-ofctl -O OpenFlow13 dump-flows', switch))
 
     #These priorities can be verified by inspecting OpenFlow rules
-    ovs-ofctl -O OpenFlow13 dump-flows s1
+    #ovs-ofctl -O OpenFlow13 dump-flows s1
 
 def test_network(net):
-    """Test network connectivity and QoS"""
     print("\nTesting network connectivity:")
-    
+
     # Get hosts
-    h1, h2, h3, h4, h5, h6 = net.get('h1', 'h2', 'h3', 'h4', 'h5', 'h6')
-    
-    # Test ping between various hosts
-    print("\nTesting ping between hosts:")
-    pairs = [(h1, h4), (h2, h5), (h3, h6)]
-    for src, dst in pairs:
-        print(f"\nPing from {src.name} to {dst.name}:")
-        print(src.cmd(f'ping -c 3 {dst.IP()}'))
-    
-    # Test bandwidth between hosts using iperf
+    h1, h4 = net.get('h1', 'h4')
+
+    # Test ping
+    print(f"\nPing from {h1.name} to {h4.name}:")
+    print(h1.cmd(f'ping -c 3 {h4.IP()}'))
+
+    # Test IoT sensor data transfer
+    print("\nStarting IoT data transfer:")
+    print(f"Run the following commands in terminals:\n"
+          f"h1: python3 sensor_script.py\n"
+          f"h4: python3 receiver_script.py")
+
+    # Test bandwidth using iperf
     print("\nTesting bandwidth between hosts:")
-    for src, dst in pairs:
-        print(f"\nBandwidth test from {src.name} to {dst.name}:")
-        dst.cmd('iperf -s &')
-        sleep(1)
-        print(src.cmd(f'iperf -c {dst.IP()} -t 5'))
-        dst.cmd('kill %iperf')
+    h4.cmd('iperf -s -u &')
+    time.sleep(1)
+    print(h1.cmd(f'iperf -c {h4.IP()} -u -b 10M -t 5'))
+    h4.cmd('kill %iperf')
+
+
+class CustomController(Controller):
+    def __init__(self, name, port=6653, **kwargs):
+        Controller.__init__(self, name, port=port, **kwargs)
+
+
 
 def main():
     setLogLevel('info')
