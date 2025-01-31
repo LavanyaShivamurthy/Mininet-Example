@@ -38,7 +38,7 @@ class TopoOF13(Topo):
         s2 = self.addSwitch('s2', protocols='OpenFlow13')
         s3 = self.addSwitch('s3', protocols='OpenFlow13')
         s4 = self.addSwitch('s4', protocols='OpenFlow13')
-        
+
         """
         # Add host links with QoS parameters
         self.addLink(h1, s1, cls=TCLink, bw=10, delay='5ms', loss=1)
@@ -54,6 +54,8 @@ class TopoOF13(Topo):
         self.addLink(s3, s4, cls=TCLink, bw=20, delay='2ms', loss=0)
         self.addLink(s1, s4, cls=TCLink, bw=20, delay='2ms', loss=0)
         """
+
+
         self.addLink(h1, s1, bw=10, delay='5ms', loss=1, use_htb=True, r2q=1)
         self.addLink(h2, s1, bw=10, delay='5ms', loss=1, use_htb=True, r2q=1)
         self.addLink(h3, s2, bw=10, delay='5ms', loss=1, use_htb=True, r2q=1)
@@ -80,8 +82,7 @@ def configure_switch_of13(switch):
     # Clear existing QoS configurations
     for port in range(1, 5):  # Support up to 4 ports per switch
         switch.cmd(f'ovs-vsctl clear Port {switch.name}-eth{port} qos')
-    
-    # Configure QoS for each port with three queues
+     # Configure QoS for each port with three queues
     for port in range(1, 5):
         cmd = f'''ovs-vsctl -- \
                 set Port {switch.name}-eth{port} qos=@newqos -- \
@@ -95,7 +96,8 @@ def configure_switch_of13(switch):
                                                other-config:max-rate=15000000 -- \
                 --id=@q2 create Queue other-config:min-rate=3000000 \
                                                other-config:max-rate=20000000'''
-        switch.cmd(cmd)
+
+    switch.cmd(cmd)
 
 def add_openflow_rules(switch):
     """Add OpenFlow rules to the switch"""
@@ -137,19 +139,28 @@ def add_openflow_rules(switch):
     print(switch.cmd('ovs-ofctl -O OpenFlow13 dump-flows', switch))
 
 
-def configure_htb_qdisc(switch, interface):
+def configure_htb_qdisc(switch):
     """
-    Configures HTB qdisc on a specific interface of a given switch in Mininet.
+       Configures HTB qdisc on all interfaces of a given switch in Mininet.
 
-    :param switch: Mininet switch object (e.g., s1)
-    :param interface: Interface name as a string (e.g., 's1-eth1')
-    """
-    command_1= f"tc qdisc del dev {interface} root"
-    command_2 = f"tc qdisc add dev {interface} root handle 1: htb default 1"
-    command_3 =f"tc class add dev {interface}  parent 1: classid 1:1 htb rate 10mbit burst 15k quantum 1500"
-    switch.cmd(command_1)
-    switch.cmd(command_2)
-    switch.cmd(command_3)
+       :param switch: Mininet switch object (e.g., s1)
+       """
+    # Get the list of interfaces associated with the switch
+    interfaces = switch.intfList()
+
+    for intf in interfaces:
+        # Avoid configuring management interfaces like 'lo' or control-plane interfaces
+        if not intf.name.startswith('lo'):  # Ignore loopback interface
+           # Remove existing qdisc
+            switch.cmd(f"tc qdisc del dev {intf.name} root")
+            # Add HTB qdisc
+            switch.cmd(f"tc qdisc add dev {intf.name} root handle 1: htb default 10")
+            # Add root class
+            switch.cmd(f"tc class add dev {intf.name} parent 1: classid 1:1 htb rate 200Mbit burst 15k")
+            # Add subclasses for different traffic types
+            switch.cmd(f"tc class add dev {intf.name} parent 1:1 classid 1:10 htb rate 10Mbit ceil 200Mbit burst 15k")
+            switch.cmd(f"tc class add dev {intf.name} parent 1:1 classid 1:20 htb rate 50Mbit ceil 200Mbit burst 15k")
+            switch.cmd(f"tc class add dev {intf.name} parent 1:1 classid 1:30 htb rate 100Mbit ceil 200Mbit burst 15k")
 
 def test_network(net):
     """Test network connectivity and QoS"""
@@ -243,7 +254,7 @@ def main():
         link=TCLink,
         autoSetMacs=True
     )
-    
+
     net.start()
     print("Waiting for network to initialize...")
     sleep(2)
@@ -252,14 +263,8 @@ def main():
     for switch in net.switches:
         configure_switch_of13(switch)
         add_openflow_rules(switch)
+        configure_htb_qdisc(switch)    # configure Switch and Fix HTB settings using tc
 
-    for switch in net.switches:
-
-
-    #configure Switch and Fix HTB settings using tc
-    print("Adjusting HTB parameters...")
-
-        
 
 if __name__ == '__main__':
     main()

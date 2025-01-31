@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 from mininet.net import Mininet
-from mininet.node import Controller, OVSController
+from mininet.node import Controller
 from mininet.node import OVSKernelSwitch
 from mininet.cli import CLI
 from mininet.log import setLogLevel, info
@@ -9,7 +9,6 @@ from mininet.link import TCLink
 from threading import Thread
 import time
 import random
-import os
 
 def generate_emergency_alerts(host, destination, duration=60):
     """Generate emergency alert traffic"""
@@ -29,23 +28,15 @@ def generate_medical_imaging(host, destination, duration=60):
     host.cmd(f'iperf -c {destination} -t {duration} -b 50M -Q 0x18 &')
 
 def createHealthcareNetwork():
-    # Kill any existing controllers
-    os.system('sudo pkill -f "controller"')
-    
-    # Use OVS Controller instead of default
-    net = Mininet(topo=None, 
-                  build=False, 
-                  link=TCLink, 
-                  controller=OVSController,  # Use OVS built-in controller
-                  autoSetMacs=True)  # Automatically set MAC addresses
+    net = Mininet(topo=None, build=False, link=TCLink)
 
     info('*** Adding controller\n')
-    c0 = net.addController('c0', controller=OVSController)
+    c0 = net.addController('c0')
 
     info('*** Adding switches\n')
-    s1 = net.addSwitch('s1', cls=OVSKernelSwitch, protocols='OpenFlow13')
-    s2 = net.addSwitch('s2', cls=OVSKernelSwitch, protocols='OpenFlow13')
-    s3 = net.addSwitch('s3', cls=OVSKernelSwitch, protocols='OpenFlow13')
+    s1 = net.addSwitch('s1', cls=OVSKernelSwitch)
+    s2 = net.addSwitch('s2', cls=OVSKernelSwitch)
+    s3 = net.addSwitch('s3', cls=OVSKernelSwitch)
 
     info('*** Adding medical devices/hosts\n')
     # Emergency Alert Devices

@@ -195,38 +195,6 @@ def createHealthcareNetwork():
             --id=@q4 create Queue other-config:min-rate=2000000 other-config:max-rate=10000000 -- \
             --id=@q5 create Queue other-config:min-rate=1000000 other-config:max-rate=5000000')
 
-
-
-    # Initialize TCPDump collector
-    tcpdump_collector = TCPDumpCollector(net, output_dir='tcpdump_data')
-
-    sleep(5)
-    try:
-        # Start tcpdump on all hosts
-        for host in net.hosts:
-            tcpdump_collector.start_capture(host)
-        
-        print("\nNetwork is ready.")
-        print("Available commands:")
-        print("  showstats - Show current network statistics")
-        print("  stoptcpdump - Stop all tcpdump captures")
-        CLI(net)
-
-    except Exception as e:
-        print(f"Error during network operation: {e}")
-
-    finally:
-        # Cleanup
-        print("Cleaning up...")
-        tcpdump_collector.cleanup()
-       # monitor.stop_monitoring()
-        net.stop()
-        os.system('pkill -f tcpdump')  # Final cleanup of any remaining tcpdump processes
-
-
-
-
-
 """
     # Flow rules for different traffic types
     # Emergency Alerts (Highest Priority)

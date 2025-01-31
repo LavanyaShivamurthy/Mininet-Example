@@ -202,8 +202,10 @@ def createHealthcareNetwork():
 
     sleep(5)
     try:
+
         # Start tcpdump on all hosts
-        for host in net.hosts:
+        for switch in net.hosts: net.sw
+
             tcpdump_collector.start_capture(host)
         
         print("\nNetwork is ready.")
