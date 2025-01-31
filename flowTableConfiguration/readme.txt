@@ -4,4 +4,4 @@ run BaseCode_noconfig.py
 
 mininet>xterm emergeny 
 
-python3 sensor_data_infinte.py 10.0.0.100
+python3 sensor_data_infinite.py 10.0.0.100
